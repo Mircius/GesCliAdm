@@ -23,24 +23,40 @@
     <div id="ClientsTable"></div>
     {{ $clientes->links() }}
     <script>
+        $(document).ready(function(){
+            $.ajax({
+                method: "GET",
+                url:"/api/clientes"
+                
+            })
+            .done(function(clientes){
+                
+                CreateTable("#ClientsTable",clientes.data,undefined);
+            })
+            .fail(function(jqXHR,textStatus){
+                console.log("fail: "+textStatus);
+            });
+
+        });
+
         
-        var clientes = {!! json_encode($clientes->toArray(), JSON_HEX_TAG) !!} ;
+        // var clientes = {!! json_encode($clientes->toArray(), JSON_HEX_TAG) !!} ;
 
-        console.log(clientes)
+        // console.log(clientes)
 
-        CreateTable("#ClientsTable",clientes.data,undefined);
+        // CreateTable("#ClientsTable",clientes.data,undefined);
 
-        createFilter('#ClientsTable table thead',"/","clientes","table");
+        // createFilter('#ClientsTable table thead',"/","clientes","table");
         
-       $('.clickable').each(function(){
-            $(this).attr("data-href","/clients/"+$(this).attr("id"));
-       })
+       // $('.clickable').each(function(){
+       //      $(this).attr("data-href","/clients/"+$(this).attr("id"));
+       // })
 
-       $('.clickable').click(function(){
-            window.location=$(this).data('href');
-       });
+       // $('.clickable').click(function(){
+       //      window.location=$(this).data('href');
+       // });
 
-        $('input[name="filtro"]').val('{{$filtro}}');
+       //  $('input[name="filtro"]').val('{{$filtro}}');
 
     </script>
 @stop

@@ -12,6 +12,12 @@ use DB;
 
 class ClientsController extends Controller
 {
+
+    //  public function getIndex(){
+
+    //     return view('clients.clientes');
+    // }
+    
     public function index(Request $request){
         if($request->has('filtro')){
             $filtro=$request->input('filtro');
@@ -31,6 +37,29 @@ class ClientsController extends Controller
                 ->paginate(10);            
                 return view('clients.clientes', compact('clientes','filtro'));
 
+
+        }
+
+    }
+        public function indexApi(Request $request){
+        if($request->has('filtro')){
+            $filtro=$request->input('filtro');
+            $clientes=DB::table('clientes')
+                            ->select('id', 'Nombre', 'Localidad', 'cif/nif')
+                            ->where('nombre','LIKE',"%".$request->input('filtro')."%")
+                            ->orwhere('localidad','LIKE',"%".$request->input('filtro')."%")
+                            ->orwhere('cif/nif','LIKE',"%".$request->input('filtro')."%")
+                            ->paginate(10)
+                            ->appends('filtro',$filtro);
+            return $clientes;
+            
+        }else{
+        $filtro=null;
+        $clientes = DB::table('clientes')
+                ->select('id', 'Nombre', 'Localidad', 'cif/nif')
+                ->paginate(10);            
+        
+        return $clientes;
 
         }
 
