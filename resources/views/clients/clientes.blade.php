@@ -22,22 +22,62 @@
     
     <div id="ClientsTable"></div>
     {{ $clientes->links() }}
+
     <script>
-        $(document).ready(function(){
+        function firstLoad(){
             $.ajax({
                 method: "GET",
-                url:"/api/clientes"
+                url: "/api/clientes"
                 
             })
-            .done(function(clientes){
-                
+            .done(function(clientes){     
+            console.log(clientes)           
                 CreateTable("#ClientsTable",clientes.data,undefined);
             })
             .fail(function(jqXHR,textStatus){
                 console.log("fail: "+textStatus);
             });
 
-        });
+        }
+        // http://localhost:8000/api/clientes?
+        $(document).ready(function (){
+            firstLoad();
+        
+            $("a.page-link").click(function(){ visualizarClientes(this);return false;})
+                // var hrefSplit = $(this).attr('href').split("?");
+                // var hrefFinal = "/api/clientes?" + hrefSplit[1];
+                console.log($("a.page-link"));
+                // $(this).click(function(){ visualizarClientes(hrefFinal)})
+                // click(function(){ checkForm(idForm);return false; })
+            });
+            // console.log($('#link').attr('href'));
+        
+
+       function visualizarClientes(page){
+        console.log(page.text);
+            $.ajax({
+                method: "GET",
+                url: "/api/clientes?page="+page.text
+                
+            })
+            .done(function(clientes){ 
+                $("table").remove();
+                $(page).attr('aria-current', 'page');
+
+                var antiguoActivo = $("span.page-link").text;
+                $("span.page-link:parent").append('<a class="page-link" href="http://localhost:8000?page='+antiguoActivo+'">'+antiguoActivo+'</a>');
+
+                $("span.page-link").remove();
+
+
+                CreateTable("#ClientsTable",clientes.data,undefined);
+                return true;
+                // <a class="page-link" href="http://localhost:8000?page=1">1</a>
+            })
+            .fail(function(jqXHR,textStatus){
+                console.log("fail: "+textStatus);
+            });
+        };
 
         
         // var clientes = {!! json_encode($clientes->toArray(), JSON_HEX_TAG) !!} ;

@@ -49,7 +49,7 @@ class ClientsController extends Controller
                             ->where('nombre','LIKE',"%".$request->input('filtro')."%")
                             ->orwhere('localidad','LIKE',"%".$request->input('filtro')."%")
                             ->orwhere('cif/nif','LIKE',"%".$request->input('filtro')."%")
-                            ->paginate(10)
+                            ->paginate(25)
                             ->appends('filtro',$filtro);
             return $clientes;
             
@@ -57,8 +57,7 @@ class ClientsController extends Controller
         $filtro=null;
         $clientes = DB::table('clientes')
                 ->select('id', 'Nombre', 'Localidad', 'cif/nif')
-                ->paginate(10);            
-        
+                ->paginate(25);            
         return $clientes;
 
         }
