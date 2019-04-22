@@ -62,6 +62,14 @@ class ClientsController extends Controller
         }
     }
 
+    public function show($id){
+    	$cliente = Cliente::findOrFail($id)
+			->paginate(10);
+			
+		return $cliente;
+
+    }
+
     public function create(Request $request){
         //echo $request->input('cif/nif');
         //Cliente::create($request->all());
@@ -103,7 +111,14 @@ class ClientsController extends Controller
                     'cp' => $request->input('cp'),
                 ]);
 
-            return redirect()->back();
+		
+				$cliente = Cliente::findOrFail($id)
+					->select('id', 'Nombre', 'Localidad', 'cif/nif')
+					->paginate(10);
+
+            return response()->json([
+            	'cliente' => $cliente
+            ]);
         }catch(\Exception $ex){
             return back()->withErrors(['Error'=>'Error del servidor']);
         }

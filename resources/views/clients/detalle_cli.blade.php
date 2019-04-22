@@ -133,44 +133,92 @@
         </div>
 	</div>
     <script type="text/javascript">
-        var cliente = {!! json_encode($cliente, JSON_HEX_TAG) !!};
-        console.log(cliente)
-        var listadoventas = {!! json_encode($ventas, JSON_HEX_TAG) !!};
-        var ventas = listadoventas.data;
-        CreateForm('#Input',cliente,undefined);
+        $(document).ready(function (){
+            iniciarPagina();
+            $(".saveClient").click(function(){ editarCliente(event);return false;}) 
+            });
 
-        if(ventas.length != 0){
-            CreateTable('#Sales',ventas,undefined);
-            createFilter("#Sales table thead","/clients/{{$cliente[0]->id}}","ventas","table");
+         function editarCliente(e){
+             e.preventDefault();
+             $id = window.location.href.split("clients/")[1];
+
+              $.ajax({
+                url: "/api/cliente"+$id,
+                method: "POST",
+                data: {
+                    nombre: $("#nombre").val(),
+                    direccion: $("#direccion").val(),
+                    provincia: $("#provincia").val(),
+                    localidad: $("#localidad").val(),
+                    cifNif: $("#cif/nif").val(),
+                    email: $("#email").val(),
+                    telefono: $("#telefono").val(),
+                    cp: $("#cp").val()
+                }
+                
+            })
+            .done(function(clientes){ 
+                $("table").remove();
+
+                CreateTable("#ClientsTable",clientes.cliente.data);
+
+                        // createFilter('#ClientsTable table thead',"/","clientes","table");
+        
+                $('.clickable').each(function(){
+                    $(this).attr("data-href","/clients/"+$(this).attr("id"));
+                })
+
+                $('.clickable').click(function(){
+                    window.location=$(this).data('href');
+                });
+
+                $('input[name="filtro"]').val('{{$filtro}}');
+                    return true;
+                })
+            .fail(function(jqXHR,textStatus){
+                console.log("fail: "+textStatus);
+            });
+         }
+
+        function iniciarPagina(){
+            var cliente = {!! json_encode($cliente, JSON_HEX_TAG) !!};
+            var listadoventas = {!! json_encode($ventas, JSON_HEX_TAG) !!};
+            var ventas = listadoventas.data;
+            CreateForm('#Input',cliente,undefined);
+
+            if(ventas.length != 0){
+                CreateTable('#Sales',ventas,undefined);
+                createFilter("#Sales table thead","/clients/{{$cliente[0]->id}}","ventas","table");
+                $('.clickable').click(function(){
+                    window.location=$(this).data('href');
+                });
+            }else{
+                var div = $('<div class="NoResults"><h3>No hay ventas disponibles</h3></div>')
+                            .appendTo('#Sales');
+                var div = CreateElement(div,'div','Ventas',{class:'divtop'})
+                createFilter(div,"/clients/{{$cliente[0]->id}}","ventas","div");
+            }
+    	    
+            $('input[name="cif/nif"]').prop('readonly',true);
+            
+            CreateElement('#Input',"div","Información de Cliente",{class:"divtop"});
+
+            //Añadimos el botón para poder agregar una nueva venta
+            $('th:last').css('position','relative');
+            var a = CreateElement('th:last',"a",undefined,{"href":"#costumModal10","data-toggle":"modal",class:"buttonTop"});
+            CreateElement(a,'button','Añadir Venta',{class:'btn btn-primary','type':'submit'});
+
+            $('.clickable').each(function(){
+                $(this).attr("data-href","/sales/"+$(this).attr("id"));
+            });
+
             $('.clickable').click(function(){
                 window.location=$(this).data('href');
             });
-        }else{
-            var div = $('<div class="NoResults"><h3>No hay ventas disponibles</h3></div>')
-                        .appendTo('#Sales');
-            var div = CreateElement(div,'div','Ventas',{class:'divtop'})
-            createFilter(div,"/clients/{{$cliente[0]->id}}","ventas","div");
+
+            estadoVentas();
+            $('input[name="filtro"]').val('{{$filtro}}');
         }
-	    
-        $('input[name="cif/nif"]').prop('readonly',true);
-        
-        CreateElement('#Input',"div","Información de Cliente",{class:"divtop"});
-
-        //Añadimos el botón para poder agregar una nueva venta
-        $('th:last').css('position','relative');
-        var a = CreateElement('th:last',"a",undefined,{"href":"#costumModal10","data-toggle":"modal",class:"buttonTop"});
-        CreateElement(a,'button','Añadir Venta',{class:'btn btn-primary','type':'submit'});
-
-        $('.clickable').each(function(){
-            $(this).attr("data-href","/sales/"+$(this).attr("id"));
-        });
-
-        $('.clickable').click(function(){
-            window.location=$(this).data('href');
-        });
-
-        estadoVentas();
-        $('input[name="filtro"]').val('{{$filtro}}');
 	</script>
 @stop
 

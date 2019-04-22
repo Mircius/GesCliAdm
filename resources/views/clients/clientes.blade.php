@@ -106,6 +106,7 @@
 
         function crearCliente(e){
             e.preventDefault();
+            
             $.ajax({
                 url: "/api/clientes",
                 method: "POST",

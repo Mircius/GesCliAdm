@@ -19,7 +19,7 @@
 
 	Route::get('clientes', 'ClientsController@indexApi');
 	// Route::get('clientes', 'ClientController@index');
-	Route::get('clientes/{id}', 'ClientsController@show');
+	Route::get('cliente/{id}', 'ClientsController@show');
 	Route::post('clientes', 'ClientsController@create');
 	Route::put('clientes/{id}', 'ClientsController@update');
 	Route::delete('clientes/{id}', 'ClientsController@delete');
