@@ -49,7 +49,7 @@ class ClientsController extends Controller
                             ->where('nombre','LIKE',"%".$request->input('filtro')."%")
                             ->orwhere('localidad','LIKE',"%".$request->input('filtro')."%")
                             ->orwhere('cif/nif','LIKE',"%".$request->input('filtro')."%")
-                            ->paginate(25)
+                            ->paginate(10)
                             ->appends('filtro',$filtro);
             return $clientes;
             
@@ -57,29 +57,36 @@ class ClientsController extends Controller
         $filtro=null;
         $clientes = DB::table('clientes')
                 ->select('id', 'Nombre', 'Localidad', 'cif/nif')
-                ->paginate(25);            
+                ->paginate(10);            
         return $clientes;
-
         }
-
     }
 
     public function create(Request $request){
         //echo $request->input('cif/nif');
         //Cliente::create($request->all());
-        Cliente::create(
-            [
-                'nombre' => $request->input('nombre'),
-                'direccion' => $request->input('direccion'),
-                'provincia' => $request->input('provincia'),
-                'localidad' => $request->input('localidad'),
-                'CIF/NIF' => $request->input('cif/nif'),
-                'email' => $request->input('email'),
-                'telefono' => $request->input('telefono'),
-                'cp' => $request->input('cp'),
-            ]
-        );
-        return redirect('/');
+        if($request->ajax()){
+            Cliente::create(
+                [
+                    'nombre' => $request->input('nombre'),
+                    'direccion' => $request->input('direccion'),
+                    'provincia' => $request->input('provincia'),
+                    'localidad' => $request->input('localidad'),
+                    'CIF/NIF' => $request->input('cifNif'),
+                    'email' => $request->input('email'),
+                    'telefono' => $request->input('telefono'),
+                    'cp' => $request->input('cp'),
+                ]
+            );
+            $clientes_total = \App\Cliente::all()->count();
+            $clientes = DB::table('clientes')
+                ->select('id', 'Nombre', 'Localidad', 'cif/nif')
+                ->paginate(10);
+            return response()->json([
+            	'total' => $clientes_total,
+            	'cliente' => $clientes
+            ]);
+        }
     }
 
     public function edit(Request $request, $id){
