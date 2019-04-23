@@ -144,36 +144,13 @@
 
               $.ajax({
                 url: "/api/cliente"+$id,
-                method: "POST",
-                data: {
-                    nombre: $("#nombre").val(),
-                    direccion: $("#direccion").val(),
-                    provincia: $("#provincia").val(),
-                    localidad: $("#localidad").val(),
-                    cifNif: $("#cif/nif").val(),
-                    email: $("#email").val(),
-                    telefono: $("#telefono").val(),
-                    cp: $("#cp").val()
-                }
+                method: "GET",
                 
             })
-            .done(function(clientes){ 
-                $("table").remove();
-
-                CreateTable("#ClientsTable",clientes.cliente.data);
-
-                        // createFilter('#ClientsTable table thead',"/","clientes","table");
-        
-                $('.clickable').each(function(){
-                    $(this).attr("data-href","/clients/"+$(this).attr("id"));
-                })
-
-                $('.clickable').click(function(){
-                    window.location=$(this).data('href');
-                });
-
-                $('input[name="filtro"]').val('{{$filtro}}');
-                    return true;
+            .done(function(cliente){
+            	$('#info').text("Se ha modificado con exito");
+				
+				return true;
                 })
             .fail(function(jqXHR,textStatus){
                 console.log("fail: "+textStatus);

@@ -119,9 +119,7 @@
                     email: $("#email").val(),
                     telefono: $("#telefono").val(),
                     cp: $("#cp").val()
-
                 }
-                
             })
             .done(function(clientes){ 
                 $("table").remove();

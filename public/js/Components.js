@@ -147,12 +147,16 @@ function CreateForm(parent,data,params){
     data.forEach(function(elements){
         for(item in elements){
             if(item==="id"){
-                form.attr({"method":"post","action":"{{ action('ClientsController@edit') }}")
+                form.attr({"method":"post","action":"{{ action('ClientsController@edit') }}"});
+            }else if(item==="cif/nif"){
+                var label=CreateElement(form,"label",item,undefined);
+                CreateElement(form,"input",undefined,{'value':elements[item],name:item, id:'cifNif','required':true});
             }else{
                 var label=CreateElement(form,"label",item,undefined);
                 CreateElement(form,"input",undefined,{'value':elements[item],name:item, id:item,'required':true});
             }
         }
         CreateElement(form,"button","Modificar Cliente",{class:"btn btn-primary saveClient"});
+       form.append('<span>').attr(id, 'info');
     })
 }

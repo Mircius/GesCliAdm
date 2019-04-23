@@ -66,7 +66,9 @@ class ClientsController extends Controller
     	$cliente = Cliente::findOrFail($id)
 			->paginate(10);
 			
-		return $cliente;
+		return response()->json([
+                'cliente' => $cliente
+            ]);
 
     }
 
@@ -99,26 +101,28 @@ class ClientsController extends Controller
 
     public function edit(Request $request, $id){
         try{
-            Cliente::findOrFail($id)
-                ->update([
-                    'nombre' => $request->input('nombre'),
-                    'direccion' => $request->input('direccion'),
-                    'provincia' => $request->input('provincia'),
-                    'localidad' => $request->input('localidad'),
-                    'cif/nif' => $request->input('cif/nif'),
-                    'email' => $request->input('email'),
-                    'telefono' => $request->input('telefono'),
-                    'cp' => $request->input('cp'),
+            if($request->ajax()){
+                Cliente::findOrFail($id)
+                    ->update([
+                        'nombre' => $request->input('nombre'),
+                        'direccion' => $request->input('direccion'),
+                        'provincia' => $request->input('provincia'),
+                        'localidad' => $request->input('localidad'),
+                        'cif/nif' => $request->input('cif/nif'),
+                        'email' => $request->input('email'),
+                        'telefono' => $request->input('telefono'),
+                        'cp' => $request->input('cp'),
+                    ]);
+
+    		
+    				$cliente = Cliente::findOrFail($id)
+    					->select('id', 'Nombre', 'Localidad', 'cif/nif')
+    					->paginate(10);
+
+                return response()->json([
+                	'cliente' => $cliente
                 ]);
-
-		
-				$cliente = Cliente::findOrFail($id)
-					->select('id', 'Nombre', 'Localidad', 'cif/nif')
-					->paginate(10);
-
-            return response()->json([
-            	'cliente' => $cliente
-            ]);
+            }
         }catch(\Exception $ex){
             return back()->withErrors(['Error'=>'Error del servidor']);
         }
