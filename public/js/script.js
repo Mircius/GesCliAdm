@@ -60,7 +60,7 @@ function createFilter(parent,url,vista,tipo){
         .appendTo(".filterInputs");
 
     $('<input>')
-            .attr({'type':'text','name':'filtro','tipo':vista})
+            .attr({'type':'text','id':'filtro','name':'filtro','tipo':vista})
             .appendTo(form)
     $('<input>')
         .attr({'type':'submit','value':'Filtrar',class:"btn"})
@@ -74,6 +74,14 @@ function createFilter(parent,url,vista,tipo){
     $('<input>')
         .attr({'type':'hidden',"name":"tipo", "value":vista})
         .appendTo(form);
+    // lisen();
+}
+function lisen(){
+    $('#filtro').on('keyup',function(){
+        var value=$('#filtro').val();
+        console.log(value);
+        $('#magicalPlace').html(value);
+    });
 }
 
 /**

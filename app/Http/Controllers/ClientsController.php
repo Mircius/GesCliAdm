@@ -41,6 +41,7 @@ class ClientsController extends Controller
         }
 
     }
+
         public function indexApi(Request $request){
         if($request->has('filtro')){
             $filtro=$request->input('filtro');
@@ -64,7 +65,7 @@ class ClientsController extends Controller
 
     public function show($id){
     	$cliente = Cliente::findOrFail($id)
-			->paginate(10);
+			->paginate(5);
 			
 		return $cliente;
 
@@ -89,7 +90,7 @@ class ClientsController extends Controller
             $clientes_total = \App\Cliente::all()->count();
             $clientes = DB::table('clientes')
                 ->select('id', 'Nombre', 'Localidad', 'cif/nif')
-                ->paginate(10);
+                ->paginate(5);
             return response()->json([
             	'total' => $clientes_total,
             	'cliente' => $clientes
@@ -114,7 +115,7 @@ class ClientsController extends Controller
 		
 				$cliente = Cliente::findOrFail($id)
 					->select('id', 'Nombre', 'Localidad', 'cif/nif')
-					->paginate(10);
+					->paginate(5);
 
             return response()->json([
             	'cliente' => $cliente
