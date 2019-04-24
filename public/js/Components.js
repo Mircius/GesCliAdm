@@ -140,6 +140,7 @@ function filterData(result){
  * @param {*} params Objeto con elementos clave valor, por ejemplo: {class:'container',name:'elemento1'}
  */
 function CreateForm(parent,data,params){
+    console.log(data);
     var form=CreateElement(parent,"form",undefined,{id:"form"});
     var csrfVar = $('meta[name="csrf-token"]').attr('content');
     form.append("<input name='_token' value='" + csrfVar + "' type='hidden'>");
