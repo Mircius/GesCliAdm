@@ -21,89 +21,25 @@
     </div>
     
     <div id="ClientsTable"></div>
-    {{ $clientes->links() }}
-
+     <div id="links">
+        {{$clientes->links()}}
+    </div>
     <script>
-        function firstLoad(){
-            $.ajax({
-                method: "GET",
-                url: "/api/clientes"
-                
-            })
-            .done(function(clientes){     
-            // console.log(clientes)           
-                CreateTable("#ClientsTable",clientes.data,undefined);
-                 $('.clickable').each(function(){
-                    $(this).attr("data-href","/clients/"+$(this).attr("id"));
-                })
-
-                $('.clickable').click(function(){
-                    window.location=$(this).data('href');
-                });
-
-                $('input[name="filtro"]').val('{{$filtro}}');
-                    return true;
-            })
-            .fail(function(jqXHR,textStatus){
-                console.log("fail: "+textStatus);
-            });
-
-        }
-        // http://localhost:8000/api/clientes?
+    
         $(document).ready(function (){
-            firstLoad();
+            ajaxClientes();
+        
             
-            $("a.page-link").click(function(){ visualizarClientes(this);return false;})
-                // var hrefSplit = $(this).attr('href').split("?");
-                // var hrefFinal = "/api/clientes?" + hrefSplit[1];
-                // console.log($("a.page-link"));
-                // $(this).click(function(){ visualizarClientes(hrefFinal)})
-                // click(function(){ checkForm(idForm);return false; })
+            $("a.page-link").click(function(){ visualizarClientes(this, event);return false;})
+              
             
 
             $("#btn-save").click(function(){ crearCliente(event);return false;})
-                // console.log($(".btn-save"));
             });
             
         
 
-       function visualizarClientes(page){
-        // console.log(page.text);
-            $.ajax({
-                method: "GET",
-                url: "/api/clientes?page="+page.text
-                
-            })
-            .done(function(clientes){ 
-                $("table").remove();
-                $(page).attr('aria-current', 'page');
-
-                var antiguoActivo = $("span.page-link").text;
-                $("span.page-link:parent").append('<a class="page-link" href="http://localhost:8000?page='+antiguoActivo+'">'+antiguoActivo+'</a>');
-
-                $("span.page-link").remove();
-
-
-                CreateTable("#ClientsTable",clientes.data,undefined);
-
-                 $('.clickable').each(function(){
-                    $(this).attr("data-href","/clients/"+$(this).attr("id"));
-                })
-
-                $('.clickable').click(function(){
-                    window.location=$(this).data('href');
-                });
-
-                $('input[name="filtro"]').val('{{$filtro}}');
-                
-                return true;
-                // <a class="page-link" href="http://localhost:8000?page=1">1</a>
-            })
-            .fail(function(jqXHR,textStatus){
-                console.log("fail: "+textStatus);
-            });
-        };
-
+     
         function crearCliente(e){
             e.preventDefault();
             
@@ -164,6 +100,32 @@
 
        //  $('input[name="filtro"]').val('{{$filtro}}');
 
+
+
+
+       //NILL
+
+       //   var clientes = {!! json_encode($clientes,JSON_HEX_TAG) !!};
+       //  //console.log(clientes)
+       //  CreateTable("#ClientsTable",clientes.data,undefined);
+       //  //console.log(clientes);
+       //  //CreateLinkPag(clientes);
+       //  createFilter('#ClientsTable table thead',"/","clientes","table");
+        
+       // $('.clickable').each(function(){
+       //      $(this).attr("data-href","/clients/"+$(this).attr("id"));
+       // })
+       // $('.clickable').click(function(){
+       //      window.location=$(this).data('href');
+       // });
+       //  $('input[name="filtro"]').val('');
+       //  ajaxClientes("1");
+       //  $(document).ready(function(){
+       //      $(".pagination a").on('click',function(e){
+       //          e.preventDefault();
+       //          ajaxClientes($(this).attr('href'));
+       //      });
+       //  });
     </script>
 @stop
 

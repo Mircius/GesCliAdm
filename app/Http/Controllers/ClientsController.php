@@ -12,69 +12,63 @@ use DB;
 
 class ClientsController extends Controller
 {
-
-	//  public function getIndex(){
-
-	//     return view('clients.clientes');
-	// }
 	
-	public function index(Request $request){
-		if($request->has('filtro')){
-			$filtro=$request->input('filtro');
-			$clientes=DB::table('clientes')
-							->select('id', 'Nombre', 'Localidad', 'cif/nif')
-							->where('nombre','LIKE',"%".$request->input('filtro')."%")
-							->orwhere('localidad','LIKE',"%".$request->input('filtro')."%")
-							->orwhere('cif/nif','LIKE',"%".$request->input('filtro')."%")
-							->paginate(10)
-							->appends('filtro',$filtro);
-			return view('clients.clientes', compact('clientes','filtro'));
-			
-		}else{
-		$filtro=null;
-		$clientes = DB::table('clientes')
-				->select('id', 'Nombre', 'Localidad', 'cif/nif')
-				->paginate(10);            
-				return view('clients.clientes', compact('clientes','filtro'));
+    public function index(Request $request){
+        if($request->has('filtro')){
+            $filtro=$request->input('filtro');
+            $clientes=DB::table('clientes')
+                            ->select('id', 'Nombre', 'Localidad', 'cif/nif')
+                            ->where('nombre','LIKE',"%".$request->input('filtro')."%")
+                            ->orwhere('localidad','LIKE',"%".$request->input('filtro')."%")
+                            ->orwhere('cif/nif','LIKE',"%".$request->input('filtro')."%")
+                            ->paginate(10)
+                            ->appends('filtro',$filtro);
+            return view('clients.clientes', compact('clientes','filtro'));
+            
+        }else{
+        $filtro=null;
+        $clientes = DB::table('clientes')
+                ->select('id', 'Nombre', 'Localidad', 'cif/nif')
+                ->paginate(10);            
+                return view('clients.clientes', compact('clientes','filtro'));
 
 
-		}
+        }
 
-	}
-		public function indexApi(Request $request){
-		if($request->has('filtro')){
-			$filtro=$request->input('filtro');
-			$clientes=DB::table('clientes')
-							->select('id', 'Nombre', 'Localidad', 'cif/nif')
-							->where('nombre','LIKE',"%".$request->input('filtro')."%")
-							->orwhere('localidad','LIKE',"%".$request->input('filtro')."%")
-							->orwhere('cif/nif','LIKE',"%".$request->input('filtro')."%")
-							->paginate(10)
-							->appends('filtro',$filtro);
-			return $clientes;
-			
-		}else{
-		$filtro=null;
-		$clientes = DB::table('clientes')
-				->select('id', 'Nombre', 'Localidad', 'cif/nif')
-				->paginate(10);            
-		return $clientes;
-		}
-	}
+    }
 
-	public function show($id){
-		$cliente = DB::table('clientes')
-			->select('Nombre', 'Direccion','Provincia','Localidad', 'Email', 'Telefono', 'CP')
-			->where('id',$id)
+        public function indexApi(Request $request){
+        if($request->has('filtro')){
+            $filtro=$request->input('filtro');
+            $clientes=DB::table('clientes')
+                            ->select('id', 'Nombre', 'Localidad', 'cif/nif')
+                            ->where('nombre','LIKE',"%".$request->input('filtro')."%")
+                            ->orwhere('localidad','LIKE',"%".$request->input('filtro')."%")
+                            ->orwhere('cif/nif','LIKE',"%".$request->input('filtro')."%")
+                            ->paginate(10)
+                            ->appends('filtro',$filtro);
+            return $clientes;
+            
+        }else{
+        $filtro=null;
+        $clientes = DB::table('clientes')
+                ->select('id', 'Nombre', 'Localidad', 'cif/nif')
+                ->paginate(10);            
+        return $clientes;
+        }
+    }
+
+    public function show($id){
+    	$cliente = Cliente::findOrFail($id)
+			->paginate(5);
+    	$cliente = DB::table('clientes')
+    		->select('Nombre', 'Direccion','Provincia','Localidad','cif/nif', 'Email', 'Telefono', 'CP')
+            ->where('id',$id)
 		->get();
 
 			
 		return compact('cliente');
 	}
-
-	// public function update(){
-
-	// }
 
 	public function create(Request $request){
 		//echo $request->input('cif/nif');
@@ -221,7 +215,7 @@ class ClientsController extends Controller
 			$originalFilename = $file->getClientOriginalName(); //Nombre original del archivo subido por cliente
 			$nameParts = explode('_',$NameInDB); //Troceamos el nombre que tenía en la base de datos
 			$filename = $nameParts[0] . "_" . $nameParts[1] . "_" . date('YmdHis', time()) . ".pdf"; //Creamos un nuevo nombre en base a lo anterior
-			
+
 			Storage::delete($NameInDB);
 			
 			Storage::disk('public')->put($filename,file_get_contents($file),'public'); //Subimos el archivo físico a la carpeta correspondiente
@@ -245,7 +239,8 @@ class ClientsController extends Controller
 			$venta->save();
 			return back();
 		}catch(Exception $ex){
-			return back()->withErrors(['Error'=>'Error del servidor']);
-		}
-	}
+
+		return back()->withErrors(['Error'=>'Error del servidor']);
+    }
+}
 }
