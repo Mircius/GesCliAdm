@@ -69,20 +69,17 @@ function createFilter(parent,url,vista,tipo){
         .attr({'type':'button','value':'Resetear',class:"btn"})
         .appendTo(form);
 
-    $(reset).click(function(){window.location.assign(url)});
+    // $(reset).click(function(){window.location.assign(url)});
+    $(reset).on("click",function(a){
+        $("input[type=text][name=filtro]").val("");
+        ajaxClientes("1");
+    });
 
     $('<input>')
         .attr({'type':'hidden',"name":"tipo", "value":vista})
         .appendTo(form);
-    // lisen();
 }
-function lisen(){
-    $('#filtro').on('keyup',function(){
-        var value=$('#filtro').val();
-        console.log(value);
-        $('#magicalPlace').html(value);
-    });
-}
+
 
 /**
  * 

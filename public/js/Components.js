@@ -222,11 +222,13 @@ function CreateLinkPag(data) {
     }
 }
 function ajaxClientes(page){
-//console.log("Pagina antes del done:"+page);
+var filtroVal = $('input[type=text][name=filtro]').val();
+
 $.ajax({
         url:AjUrl,
         data: {
-            page:page
+            page:page,
+            filtro:filtroVal
         },
         
         
@@ -234,7 +236,7 @@ $.ajax({
     .done(function(res){
         $('#ClientsTable').empty();
         CreateTable("#ClientsTable",res.data); //crear tabla nuevo contenido
-        createFilter('#ClientsTable table thead',"/","clientes","table");
+        createFilter('#ClientsTable table thead',"/api/","clientes","table");
         links();// links de los elementos de la tabla
         CreateLinkPag(res);// links paginacion
         console.log(res);
@@ -244,7 +246,14 @@ $.ajax({
                 ajaxClientes($(this).attr('href'));
 
             });
+            $("input[type=submit]").on('click',function(ev){
+                        ev.preventDefault();
+                        ajaxClientes("1");
+
+            });
         });
+        $('input[type=text][name=filtro]').val(filtroVal);
+
     })
     .fail(function(jqXHR,textStatus){
         console.log("fail: "+textStatus);
