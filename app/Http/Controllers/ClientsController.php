@@ -63,13 +63,12 @@ class ClientsController extends Controller
     }
 
     public function show($id){
-    	$cliente = Cliente::findOrFail($id)
-			->paginate(10);
+    	$cliente = DB::table('clientes')
+    		->select('Nombre', 'Direccion','Provincia','Localidad','cif/nif', 'Email', 'Telefono', 'CP')
+            ->where('id',$id)
+		->get();
 			
-		return response()->json([
-                'cliente' => $cliente
-            ]);
-
+		return $cliente;
     }
 
     public function create(Request $request){
@@ -114,7 +113,7 @@ class ClientsController extends Controller
                         'cp' => $request->input('cp'),
                     ]);
 
-    		
+    				
     				$cliente = Cliente::findOrFail($id)
     					->select('id', 'Nombre', 'Localidad', 'cif/nif')
     					->paginate(10);

@@ -157,6 +157,6 @@ function CreateForm(parent,data,params){
             }
         }
         CreateElement(form,"button","Modificar Cliente",{class:"btn btn-primary saveClient"});
-       form.append('<span>').attr(id, 'info');
+        CreateElement(form, 'span').attr('id', 'info');
     })
 }
